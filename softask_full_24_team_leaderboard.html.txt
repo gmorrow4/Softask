@@ -1,233 +1,886 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Softask Golf Classic — Leaderboard</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--br:#8b1a2b;--br-dk:#6b1220;--br-lt:#a82234;--br-pale:#f9eced;--br-text:#f5d8db;--br-muted:#c98890;--co:#1a2744;--co-lt:#243660;--co-pale:#e8ecf5;--co-text:#c8d4ee;--gold:#c9a84c}
-body{font-family:system-ui,-apple-system,sans-serif;color:#1a1a1a;background:#f4f4f2;min-height:100vh;padding:16px}
-.wrap{max-width:720px;margin:0 auto}
-.hdr{background:var(--br-dk);border-radius:12px 12px 0 0;overflow:hidden}
-.hdr-logos{display:flex;align-items:stretch;border-bottom:0.5px solid rgba(255,255,255,0.1)}
-.logo-s{flex:1;padding:11px 14px;background:var(--br-dk);display:flex;align-items:center;gap:9px;border-right:0.5px solid rgba(255,255,255,0.12)}
-.logo-c{padding:11px 14px;background:var(--co);display:flex;align-items:center;gap:9px}
-.lmk{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.hdr-ev{display:flex;align-items:center;justify-content:space-between;padding:9px 14px 10px;background:var(--br)}
-.filters{display:flex;align-items:center;gap:6px;padding:12px 0 8px;flex-wrap:wrap}
-.fbtn{padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:0.5px solid #ccc;background:transparent;color:#555}
-.fbtn.active{background:var(--br);color:#fff;border-color:var(--br)}
-.fbtn-co.active{background:var(--co);color:var(--co-text);border-color:var(--co)}
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.stat{background:#ebebeb;border-radius:8px;padding:10px 12px}
-.stat-l{font-size:11px;color:#666;margin-bottom:3px}
-.stat-v{font-size:19px;font-weight:500}
-.stat-s{font-size:10px;color:#666;margin-top:2px}
-.tbl-wrap{background:#fff;border:0.5px solid #ddd;border-radius:12px;overflow:hidden;margin-bottom:10px}
-.tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl thead tr{background:var(--co)}
-.tbl thead th{padding:9px 7px;font-weight:500;color:var(--co-text);font-size:11px;text-align:left;border-bottom:0.5px solid rgba(255,255,255,0.12)}
-.tbl thead th.r{text-align:right}
-.tbl tbody tr{border-bottom:0.5px solid #eee}
-.tbl tbody tr:last-child{border-bottom:none}
-.tbl tbody tr:hover{background:#f9f9f9}
-.tbl tbody tr.top3{background:var(--br-pale)}
-.tbl tbody tr.top3:hover{background:#f5d2d5}
-.tbl td{padding:9px 7px;vertical-align:middle}
-.tbl td.r{text-align:right}
-.medal{display:inline-flex;width:22px;height:22px;border-radius:50%;align-items:center;justify-content:center;font-size:11px;font-weight:500}
-.medal-g{background:#faeeda;color:#633806}
-.medal-s{background:#f1efe8;color:#444}
-.medal-b{background:#faece7;color:#712b13}
-.av{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;vertical-align:middle}
-.team-col{display:flex;align-items:center;gap:8px}
-.team-names{font-size:12px;font-weight:500;line-height:1.3}
-.team-sub{font-size:10px;color:#888;margin-top:1px}
-.score-neg{color:#1b5e34}
-.score-pos{color:#9b2020}
-.score-ev{color:#888}
-.thru-cell{font-size:10px;color:#666;background:#ebebeb;padding:2px 6px;border-radius:8px;white-space:nowrap;display:inline-block}
-.tee-g{font-size:10px;background:#faeeda;color:#633806;padding:1px 5px;border-radius:8px;display:inline-block}
-.tee-s{font-size:10px;background:#f1efe8;color:#444;padding:1px 5px;border-radius:8px;display:inline-block}
-.move-up{font-size:10px;color:#1b5e34}
-.move-dn{font-size:10px;color:#9b2020}
-.move-ev{font-size:10px;color:#aaa}
-.section-divider{padding:5px 10px;font-size:10px;font-weight:500;letter-spacing:.04em;color:#888;background:#f4f4f2;border-bottom:0.5px solid #eee;text-transform:uppercase}
-.legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 6px}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
-.leg-dot{width:8px;height:8px;border-radius:50%}
-.footer{display:flex;justify-content:space-between;align-items:center;padding-top:4px}
-.export-btn{font-size:11px;padding:5px 12px;border-radius:8px;border:0.5px solid #ccc;background:transparent;cursor:pointer;color:#333}
-.export-btn:hover{background:#ebebeb}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Softask Golf Classic</title>
+
+  <!-- PWA manifest (inline) -->
+  <script>
+    const manifest = {
+      name: "Softask Golf Classic",
+      short_name: "Softask Golf",
+      start_url: "/",
+      display: "standalone",
+      background_color: "#6b1220",
+      theme_color: "#8b1a2b",
+      description: "Live leaderboard, Calcutta tracker, scorecards & player chat for the Softask Golf Classic at Texas Rangers Golf Club.",
+      icons: [
+        { src: "https://via.placeholder.com/192/8b1a2b/ffffff?text=SG", sizes: "192x192", type: "image/png" },
+        { src: "https://via.placeholder.com/512/8b1a2b/ffffff?text=SG", sizes: "512x512", type: "image/png" }
+      ]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
+    const manifestURL = URL.createObjectURL(blob);
+    document.write('<link rel="manifest" href="' + manifestURL + '">');
+  </script>
+
+  <meta name="theme-color" content="#8b1a2b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Softask Golf" />
+  <meta name="description" content="Live leaderboard, Calcutta, scorecards & chat — Softask Golf Classic at Texas Rangers Golf Club, Oct 14–15." />
+
+  <!-- Open Graph for sharing -->
+  <meta property="og:title" content="Softask Golf Classic 2026" />
+  <meta property="og:description" content="Live scores, Calcutta tracker & player chat · Texas Rangers Golf Club · Oct 14–15" />
+  <meta property="og:type" content="website" />
+
+  <!-- Supabase JS client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    /* ── Reset & tokens ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --br: #8b1a2b; --br-dk: #6b1220; --br-lt: #a82234;
+      --br-pale: #f9eced; --br-text: #f5d8db; --br-muted: #c98890;
+      --co: #1a2744; --co-lt: #243660; --co-pale: #e8ecf5;
+      --co-text: #c8d4ee; --co-muted: #7a93c8;
+      --gold: #c9a84c; --gold-lt: #e8d5a0;
+      --bg: #f4f4f2; --surface: #ffffff; --surface2: #f0efeb;
+      --text: #1a1a18; --text2: #5f5e5a; --text3: #9a9890;
+      --border: rgba(0,0,0,0.1); --border2: rgba(0,0,0,0.18);
+      --green: #1b5e34; --red: #9b2020;
+      --r-md: 8px; --r-lg: 12px; --r-xl: 16px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bot: env(safe-area-inset-bottom, 0px);
+    }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* ── App shell ── */
+    #app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
+
+    /* ── Header ── */
+    .hdr { background: var(--br-dk); padding-top: var(--safe-top); position: sticky; top: 0; z-index: 100; }
+    .hdr-logos { display: flex; border-bottom: 0.5px solid rgba(255,255,255,0.1); }
+    .logo-s { flex: 1; padding: 11px 14px; background: var(--br-dk); display: flex; align-items: center; gap: 9px; border-right: 0.5px solid rgba(255,255,255,0.12); }
+    .logo-c { padding: 11px 14px; background: var(--co); display: flex; align-items: center; gap: 8px; }
+    .lmk { width: 32px; height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .hdr-ev { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px 9px; background: var(--br); }
+    .day-pills { display: flex; gap: 5px; }
+    .dpill { font-size: 11px; padding: 3px 10px; border-radius: 20px; cursor: pointer; color: var(--br-muted); border: 0.5px solid transparent; background: none; }
+    .dpill.active { background: var(--br-dk); color: var(--br-text); border-color: rgba(255,255,255,0.2); }
+    .tabs { background: var(--br-dk); display: flex; border-top: 0.5px solid rgba(255,255,255,0.08); overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { flex: 1; min-width: 60px; padding: 9px 4px 8px; text-align: center; font-size: 11px; color: var(--br-muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; }
+    .tab.active { color: var(--br-text); border-bottom-color: var(--gold); }
+
+    /* ── Content ── */
+    .body { flex: 1; padding: 12px 12px calc(12px + var(--safe-bot)); overflow-y: auto; }
+    .page { display: none; } .page.active { display: block; }
+
+    /* ── Components ── */
+    .sec { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
+    .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--r-lg); padding: 12px 14px; margin-bottom: 10px; }
+    .sgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .scard { background: var(--surface2); border-radius: var(--r-md); padding: 10px 12px; }
+    .slabel { font-size: 11px; color: var(--text2); margin-bottom: 3px; }
+    .sval { font-size: 20px; font-weight: 600; }
+    .ssub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+    /* Leaderboard rows */
+    .lrow { display: flex; align-items: center; padding: 9px 0; border-bottom: 0.5px solid var(--border); gap: 10px; }
+    .lrow:last-child { border-bottom: none; }
+    .pos { width: 22px; font-size: 13px; font-weight: 600; color: var(--text2); text-align: center; flex-shrink: 0; }
+    .pos.g { color: #b5830e; } .pos.s { color: #7a8a99; } .pos.b { color: #8c5e2a; }
+    .av { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+    .tinfo { flex: 1; min-width: 0; }
+    .tname { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tsub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+    .scr { text-align: right; }
+    .scr-big { font-size: 16px; font-weight: 700; }
+    .neg { color: var(--green); } .pos-score { color: var(--red); } .ev { color: var(--text2); }
+    .thru { font-size: 10px; color: var(--text2); background: var(--surface2); padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 2px; }
+
+    /* Badges */
+    .badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; display: inline-block; }
+    .b-ok { background: #eaf3de; color: #27500a; }
+    .b-pend { background: #faeeda; color: #633806; }
+    .b-sold { background: #eaf3de; color: #27500a; }
+    .b-live { background: #faeeda; color: #633806; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--r-md); border: 0.5px solid var(--border2); background: transparent; font-size: 13px; cursor: pointer; color: var(--text); font-family: inherit; }
+    .btn:active { opacity: 0.7; }
+    .btnp { background: var(--br); color: #fff; border-color: var(--br); }
+    .btnp:active { background: var(--br-lt); }
+    .bsm { padding: 5px 10px; font-size: 11px; }
+
+    /* Notices */
+    .notice { border-radius: var(--r-md); padding: 10px 12px; font-size: 13px; margin-bottom: 10px; }
+    .n-br { background: var(--br-pale); border: 0.5px solid #e8b0b8; color: var(--br-dk); }
+    .n-warn { background: #fef9ec; border: 0.5px solid #f0d070; color: #7a5500; }
+
+    /* Scorecard table */
+    .sc-wrap { overflow-x: auto; margin-bottom: 8px; }
+    .sc-tbl { border-collapse: collapse; width: 100%; min-width: 500px; font-size: 11px; }
+    .sc-tbl th, .sc-tbl td { padding: 5px 3px; text-align: center; border: 0.5px solid var(--border); }
+    .sc-tbl thead tr th { background: var(--co); color: var(--co-text); font-size: 10px; font-weight: 500; }
+    .row-par td { background: #1a2744; color: #c8d4ee; font-weight: 600; }
+    .row-hdcp td { background: var(--br); color: #f5d8db; font-weight: 600; }
+    .row-gold td { background: #6b4e00; color: #f0d080; }
+    .row-silver td { background: #4a4a4a; color: #d4d4d4; }
+    .row-black td { background: #2c2c2c; color: #e0e0e0; }
+    .row-score td { background: var(--surface); color: var(--text); }
+    .h-alb { background: #c5e8d3 !important; color: #085041 !important; font-weight: 700 !important; }
+    .h-bir { background: #e8f5ed !important; color: #0f6e56 !important; font-weight: 600 !important; }
+    .h-bog { background: #fcebeb !important; color: #791f1f !important; }
+    .h-dbl { background: #f7c1c1 !important; color: #501313 !important; }
+    .col-label { text-align: left !important; padding-left: 5px !important; font-weight: 600; background: var(--surface2) !important; color: var(--text) !important; }
+    .tee-btn { padding: 4px 10px; border-radius: 20px; font-size: 11px; cursor: pointer; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); font-family: inherit; }
+    .tee-btn.active { background: var(--co); color: var(--co-text); border-color: var(--co); }
+    .tee-sel { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
+
+    /* Score entry */
+    .erow { display: flex; align-items: center; padding: 7px 0; border-bottom: 0.5px solid var(--border); gap: 8px; }
+    .erow:last-child { border-bottom: none; }
+    .stpr { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .stpb { width: 28px; height: 28px; border-radius: 50%; border: 0.5px solid var(--border2); background: var(--surface2); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); font-family: inherit; }
+    .stpv { width: 22px; text-align: center; font-size: 14px; font-weight: 600; }
+    .slbl { width: 44px; text-align: right; font-size: 10px; color: var(--text2); }
+
+    /* Calcutta pot bar */
+    .potbar { background: var(--surface2); border-radius: 4px; height: 5px; flex: 1; overflow: hidden; }
+    .potfill { height: 5px; background: var(--br); border-radius: 4px; }
+    .bid { font-size: 13px; font-weight: 600; color: var(--br); white-space: nowrap; }
+
+    /* Side bets */
+    .sdcard { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--r-lg); padding: 10px 14px; margin-bottom: 8px; }
+    .sdh { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+    .sdt { font-size: 13px; font-weight: 600; }
+    .sdp { font-size: 13px; font-weight: 600; color: var(--br); margin-left: 6px; white-space: nowrap; }
+    .sdr { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 0.5px solid var(--border); }
+
+    /* Chat */
+    .chat-wrap { display: flex; flex-direction: column; }
+    .chat-msgs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .msg { display: flex; flex-direction: column; gap: 2px; }
+    .msg.me { align-items: flex-end; }
+    .msg.them { align-items: flex-start; }
+    .msg-meta { font-size: 10px; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+    .msg-bubble { max-width: 80%; padding: 8px 11px; border-radius: 14px; font-size: 13px; line-height: 1.45; }
+    .msg.me .msg-bubble { background: var(--br); color: #fff; border-bottom-right-radius: 4px; }
+    .msg.them .msg-bubble { background: var(--surface2); color: var(--text); border-bottom-left-radius: 4px; }
+    .msg-bubble.announce { background: var(--co); color: var(--co-text); border-radius: 10px; max-width: 100%; }
+    .chat-input-wrap { display: flex; gap: 7px; padding: 10px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--r-lg); }
+    .chat-input { flex: 1; border: none; background: transparent; font-size: 13px; color: var(--text); font-family: inherit; outline: none; resize: none; }
+    .online-pill { font-size: 10px; background: #eaf3de; color: #27500a; padding: 2px 8px; border-radius: 10px; }
+
+    /* Scorekeeper */
+    .skr { display: flex; align-items: center; padding: 9px 0; border-bottom: 0.5px solid var(--border); gap: 10px; }
+    .skr:last-child { border-bottom: none; }
+    .skd { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .skd.on { background: #3b9b5e; } .skd.aw { background: #ba7517; }
+
+    /* Loading spinner */
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--br); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* QR / install banner */
+    .install-banner { background: var(--co); color: var(--co-text); border-radius: var(--r-lg); padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .install-banner button { background: var(--gold); color: #412402; border: none; border-radius: var(--r-md); padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  </style>
 </head>
 <body>
-<div class="wrap">
+<div id="app">
+
+  <!-- ══ HEADER ══ -->
   <div class="hdr">
     <div class="hdr-logos">
       <div class="logo-s">
         <div class="lmk" style="background:var(--br-lt)">
-          <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#f5d8db" stroke-width="1.4"/><circle cx="10" cy="10" r="3" fill="#f5d8db"/><line x1="10" y1="2" x2="10" y2="5" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/><line x1="10" y1="15" x2="10" y2="18" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/><line x1="2" y1="10" x2="5" y2="10" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/><line x1="15" y1="10" x2="18" y2="10" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="8" stroke="#f5d8db" stroke-width="1.4"/>
+            <circle cx="10" cy="10" r="3" fill="#f5d8db"/>
+            <line x1="10" y1="2" x2="10" y2="5" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="10" y1="15" x2="10" y2="18" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="2" y1="10" x2="5" y2="10" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="15" y1="10" x2="18" y2="10" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
         </div>
-        <div><div style="font-size:13px;font-weight:500;color:#f5d8db">Softask Golf Classic</div><div style="font-size:10px;color:#c98890;margin-top:1px">Oct 14–15, 2026</div></div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#f5d8db">Softask</div>
+          <div style="font-size:10px;color:#c98890;margin-top:1px">Golf Classic</div>
+        </div>
       </div>
       <div class="logo-c">
         <div class="lmk" style="background:var(--co-lt)">
-          <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><path d="M3 17 L3 8 L10 3.5 L17 7.5 L17 17" stroke="#c8d4ee" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="M3 17 L17 17" stroke="#c8d4ee" stroke-width="1.3" stroke-linecap="round"/><circle cx="10" cy="11.5" r="2.5" fill="#c8d4ee"/><line x1="10" y1="14" x2="10" y2="17" stroke="#c8d4ee" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 17 L3 8 L10 3.5 L17 7.5 L17 17" stroke="#c8d4ee" stroke-width="1.3" stroke-linejoin="round" fill="none"/>
+            <path d="M3 17 L17 17" stroke="#c8d4ee" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="10" cy="11.5" r="2.5" fill="#c8d4ee"/>
+            <line x1="10" y1="14" x2="10" y2="17" stroke="#c8d4ee" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
         </div>
-        <div><div style="font-size:12px;font-weight:500;color:#c8d4ee">Texas Rangers Golf Club</div><div style="font-size:10px;color:#7a93c8;margin-top:1px">Arlington, TX · Par 72</div></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#c8d4ee">Texas Rangers GC</div>
+          <div style="font-size:10px;color:#7a93c8;margin-top:1px">Arlington, TX · Par 72</div>
+        </div>
       </div>
     </div>
     <div class="hdr-ev">
-      <div style="font-size:12px;color:#f5d8db">Full leaderboard — 2-Man Scramble · Day 1 final / Day 2 in progress</div>
-      <span style="font-size:10px;background:var(--br-pale);color:var(--br-dk);padding:2px 7px;border-radius:10px;border:0.5px solid #e8b0b8">Live</span>
+      <div>
+        <div style="font-size:12px;color:#f5d8db;font-weight:500">Softask Golf Classic 2026</div>
+        <div style="font-size:10px;color:#c98890;margin-top:1px">October 14–15 · 701 Brown Blvd</div>
+      </div>
+      <div class="day-pills">
+        <button class="dpill active" onclick="setDay(1,this)">Day 1</button>
+        <button class="dpill" onclick="setDay(2,this)">Day 2</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="pg('board',this)">Leaderboard</button>
+      <button class="tab" onclick="pg('calcutta',this)">Calcutta</button>
+      <button class="tab" onclick="pg('card',this)">Scorecard</button>
+      <button class="tab" onclick="pg('side',this)">Side Bets</button>
+      <button class="tab" onclick="pg('chat',this)">Chat</button>
+      <button class="tab" onclick="pg('scores',this)">Scores</button>
     </div>
   </div>
 
-  <div style="padding:0 0 12px">
-    <div class="filters">
-      <span style="font-size:11px;color:#666">Filter:</span>
-      <button class="fbtn active" onclick="filterTbl('all',this)">All 24</button>
-      <button class="fbtn" onclick="filterTbl('under',this)">Under par</button>
-      <button class="fbtn" onclick="filterTbl('over',this)">Over par</button>
-      <button class="fbtn fbtn-co" onclick="filterTbl('gold',this)">Gold tee</button>
-      <button class="fbtn fbtn-co" onclick="filterTbl('silver',this)">Silver tee</button>
+  <!-- ══ BODY ══ -->
+  <div class="body">
+
+    <!-- ── LEADERBOARD ── -->
+    <div id="p-board" class="page active">
+      <div id="install-banner" class="install-banner" style="display:none">
+        <div style="flex:1;font-size:12px">Add to your home screen for quick access during the round</div>
+        <button onclick="installApp()">Install</button>
+      </div>
+      <div class="sgrid">
+        <div class="scard"><div class="slabel">Leader</div><div class="sval" id="stat-leader">-9</div><div class="ssub">Thompson / Burke</div></div>
+        <div class="scard"><div class="slabel">Format</div><div class="sval" style="font-size:14px;padding-top:3px">2-Man<br>Scramble</div><div class="ssub" id="stat-teams">24 teams</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <p class="sec" style="margin:0">Standings — <span id="day-label">Day 1</span></p>
+        <span id="sync-status" style="font-size:10px;color:var(--text2)">Loading…</span>
+      </div>
+      <div class="card" style="padding:4px 14px" id="leaderboard-rows">
+        <div style="padding:20px;text-align:center"><div class="spinner"></div></div>
+      </div>
+      <div style="text-align:center;margin-bottom:4px">
+        <button class="btn bsm" onclick="pg('board-full',this)">View all 24 teams ↓</button>
+      </div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat"><div class="stat-l">Leader</div><div class="stat-v">-9</div><div class="stat-s">Thompson / Burke</div></div>
-      <div class="stat"><div class="stat-l">Avg score</div><div class="stat-v">-2.1</div><div class="stat-s">Field avg · Day 1</div></div>
-      <div class="stat"><div class="stat-l">Under par</div><div class="stat-v">17</div><div class="stat-s">of 24 teams</div></div>
+    <!-- ── FULL LEADERBOARD ── -->
+    <div id="p-board-full" class="page">
+      <button class="btn bsm" style="margin-bottom:10px" onclick="pg('board', document.querySelector('.tab'))">← Back</button>
+      <div id="full-leaderboard-rows"></div>
     </div>
 
-    <div class="legend">
-      <div class="leg-item"><div class="leg-dot" style="background:var(--br-pale);border:0.5px solid #e8b0b8"></div>Top 3</div>
-      <div class="leg-item"><span class="tee-g">G</span> Gold tee</div>
-      <div class="leg-item"><span class="tee-s">S</span> Silver tee</div>
-      <div class="leg-item"><span class="move-up">▲</span> Moved up D2</div>
-      <div class="leg-item"><span class="move-dn">▼</span> Moved down D2</div>
+    <!-- ── CALCUTTA ── -->
+    <div id="p-calcutta" class="page">
+      <div class="notice n-br">Calcutta auction tonight — 7 PM, Texas Rangers GC clubhouse. Held after Day 1 final scores.</div>
+      <div class="sgrid">
+        <div class="scard"><div class="slabel">Total pot</div><div class="sval" id="calc-pot">$11,400</div><div class="ssub" id="calc-sold">24 teams sold</div></div>
+        <div class="scard"><div class="slabel">Top bid</div><div class="sval" id="calc-top">$1,300</div><div class="ssub" id="calc-top-team">Thompson / Burke</div></div>
+      </div>
+      <div class="card" style="padding:8px 14px;margin-bottom:10px">
+        <div class="sec" style="margin-bottom:8px">Payout structure</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;font-size:13px"><span style="display:flex;align-items:center;gap:6px"><span style="font-weight:600;color:#b5830e">1st</span> place owner</span><span style="font-weight:600">50% — $5,700</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px"><span style="display:flex;align-items:center;gap:6px"><span style="font-weight:600;color:#7a8a99">2nd</span> place owner</span><span style="font-weight:600">30% — $3,420</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px"><span style="display:flex;align-items:center;gap:6px"><span style="font-weight:600;color:#8c5e2a">3rd</span> place owner</span><span style="font-weight:600">20% — $2,280</span></div>
+        </div>
+      </div>
+      <p class="sec">Auction results</p>
+      <div class="card" style="padding:4px 14px" id="calcutta-rows">
+        <div style="padding:20px;text-align:center"><div class="spinner"></div></div>
+      </div>
     </div>
 
-    <div class="tbl-wrap">
-      <table class="tbl">
-        <thead>
-          <tr>
-            <th style="width:34px;text-align:center">#</th>
-            <th>Team</th>
-            <th class="r" style="width:52px">Day 1</th>
-            <th class="r" style="width:56px">Day 2</th>
-            <th class="r" style="width:48px">Total</th>
-            <th class="r" style="width:40px">Thru</th>
-          </tr>
-        </thead>
-        <tbody id="tbl-body"></tbody>
-      </table>
-    </div>
+    <!-- ── SCORECARD ── -->
+    <div id="p-card" class="page">
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <select id="team-sel" style="flex:1;font-size:13px;padding:6px 10px;border-radius:var(--r-md);border:0.5px solid var(--border2);background:var(--surface);color:var(--text)">
+          <option>Thompson / Burke</option>
+          <option>Miller / Chen</option>
+          <option>Patel / Ramirez</option>
+          <option>Kim / Walsh</option>
+        </select>
+        <select style="font-size:13px;padding:6px 10px;border-radius:var(--r-md);border:0.5px solid var(--border2);background:var(--surface);color:var(--text)">
+          <option>Day 1 — Oct 14</option>
+          <option>Day 2 — Oct 15</option>
+        </select>
+      </div>
 
-    <div class="footer">
-      <span style="font-size:11px;color:#888">Scores update live · Last sync 2 min ago</span>
-      <button class="export-btn" onclick="window.print()">Print / Export</button>
-    </div>
-  </div>
-</div>
+      <div class="tee-sel">
+        <span style="font-size:11px;color:var(--text2);margin-right:2px">Tee:</span>
+        <button class="tee-btn" onclick="setTee('black',this)">Black</button>
+        <button class="tee-btn active" onclick="setTee('gold',this)">Gold</button>
+        <button class="tee-btn" onclick="setTee('silver',this)">Silver</button>
+      </div>
 
-<script>
-const teams=[
-  {pos:1,av:'TB',avc:'#f5d8db',avt:'#6b1220',p1:'Thompson',p2:'Burke',hcp:8,tee:'gold',d1:-9,d2:-7,thru:'F',move:0},
-  {pos:2,av:'MC',avc:'#e8ecf5',avt:'#1a2744',p1:'Miller',p2:'Chen',hcp:12,tee:'gold',d1:-7,d2:-6,thru:'F',move:1},
-  {pos:3,av:'PR',avc:'#faeeda',avt:'#633806',p1:'Patel',p2:'Ramirez',hcp:15,tee:'silver',d1:-6,d2:-5,thru:'F',move:0},
-  {pos:4,av:'KW',avc:'#f4c0d1',avt:'#72243e',p1:'Kim',p2:'Walsh',hcp:10,tee:'gold',d1:-5,d2:-5,thru:'F',move:-1},
-  {pos:5,av:'NG',avc:'#eeedfe',avt:'#3c3489',p1:'Nguyen',p2:'Garcia',hcp:18,tee:'silver',d1:-3,d2:-4,thru:'14',move:2},
-  {pos:6,av:'SL',avc:'#e8f5ed',avt:'#085041',p1:'Stewart',p2:'Lee',hcp:22,tee:'silver',d1:0,d2:-3,thru:'F',move:0},
-  {pos:7,av:'JR',avc:'#e6f1fb',avt:'#0c447c',p1:'Jenkins',p2:'Ross',hcp:6,tee:'gold',d1:-4,d2:-2,thru:'F',move:-2},
-  {pos:8,av:'DH',avc:'#fcebeb',avt:'#791f1f',p1:'Davis',p2:'Harris',hcp:20,tee:'silver',d1:-2,d2:-2,thru:'F',move:1},
-  {pos:9,av:'WF',avc:'#faeeda',avt:'#412402',p1:'Walker',p2:'Foster',hcp:14,tee:'gold',d1:-3,d2:-1,thru:'F',move:-1},
-  {pos:10,av:'CM',avc:'#e1f5ee',avt:'#085041',p1:'Cooper',p2:'Mills',hcp:16,tee:'silver',d1:-1,d2:-2,thru:'11',move:2},
-  {pos:11,av:'BT',avc:'#f5d8db',avt:'#6b1220',p1:'Brooks',p2:'Taylor',hcp:9,tee:'gold',d1:-2,d2:-1,thru:'F',move:0},
-  {pos:12,av:'EV',avc:'#e8ecf5',avt:'#1a2744',p1:'Evans',p2:'Vance',hcp:11,tee:'gold',d1:-1,d2:-2,thru:'F',move:1},
-  {pos:13,av:'OD',avc:'#fbeaf0',avt:'#993556',p1:'Owens',p2:'Dixon',hcp:19,tee:'silver',d1:-1,d2:-1,thru:'F',move:-1},
-  {pos:14,av:'LH',avc:'#eaf3de',avt:'#27500a',p1:'Long',p2:'Hayes',hcp:13,tee:'gold',d1:0,d2:-1,thru:'F',move:0},
-  {pos:15,av:'PM',avc:'#faeeda',avt:'#633806',p1:'Perry',p2:'Morgan',hcp:17,tee:'silver',d1:-2,d2:0,thru:'F',move:-1},
-  {pos:16,av:'GN',avc:'#e1f5ee',avt:'#04342c',p1:'Grant',p2:'Nash',hcp:21,tee:'silver',d1:0,d2:0,thru:'16',move:1},
-  {pos:17,av:'SC',avc:'#e6f1fb',avt:'#042c53',p1:'Stone',p2:'Cole',hcp:7,tee:'gold',d1:-1,d2:1,thru:'F',move:-2},
-  {pos:18,av:'AW',avc:'#f5d8db',avt:'#6b1220',p1:'Adams',p2:'Warren',hcp:24,tee:'silver',d1:1,d2:0,thru:'F',move:0},
-  {pos:19,av:'HB',avc:'#e8ecf5',avt:'#1a2744',p1:'Hughes',p2:'Bell',hcp:16,tee:'silver',d1:0,d2:1,thru:'F',move:1},
-  {pos:20,av:'FP',avc:'#fcebeb',avt:'#791f1f',p1:'Fleming',p2:'Price',hcp:5,tee:'gold',d1:1,d2:1,thru:'F',move:-1},
-  {pos:21,av:'RK',avc:'#eeedfe',avt:'#3c3489',p1:'Reed',p2:'Knight',hcp:23,tee:'silver',d1:2,d2:0,thru:'F',move:0},
-  {pos:22,av:'YC',avc:'#faeeda',avt:'#412402',p1:'Young',p2:'Cruz',hcp:18,tee:'silver',d1:1,d2:2,thru:'F',move:-1},
-  {pos:23,av:'WS',avc:'#e8f5ed',avt:'#085041',p1:'Wood',p2:'Simmons',hcp:25,tee:'silver',d1:2,d2:2,thru:'F',move:0},
-  {pos:24,av:'BD',avc:'#f4c0d1',avt:'#72243e',p1:'Burns',p2:'Dean',hcp:28,tee:'silver',d1:3,d2:2,thru:'F',move:1},
-];
-
-function fmtScore(n){if(n===null||n===undefined)return'—';if(n===0)return'E';return n>0?'+'+n:''+n;}
-function scoreClass(n){if(n===0)return'score-ev';return n<0?'score-neg':'score-pos';}
-function moveTxt(m){if(m===0)return'<span class="move-ev">—</span>';if(m>0)return'<span class="move-up">▲'+m+'</span>';return'<span class="move-dn">▼'+Math.abs(m)+'</span>';}
-function medalEl(pos){
-  if(pos===1)return'<span class="medal medal-g">1</span>';
-  if(pos===2)return'<span class="medal medal-s">2</span>';
-  if(pos===3)return'<span class="medal medal-b">3</span>';
-  return'<span style="font-size:13px;font-weight:500;color:#888">'+pos+'</span>';
-}
-function teeEl(t){
-  if(t==='gold')return'<span class="tee-g">G</span>';
-  return'<span class="tee-s">S</span>';
-}
-
-function renderRows(data){
-  const body=document.getElementById('tbl-body');
-  body.innerHTML='';
-  let lastSec='';
-  data.forEach(t=>{
-    const total=t.d1+(t.d2||0);
-    let sec='';
-    if(t.pos===1)sec='Podium contenders';
-    else if(total<0&&lastSec!=='Under par')sec='Under par';
-    else if(total===0&&lastSec!=='Even par')sec='Even par';
-    else if(total>0&&lastSec!=='Over par')sec='Over par';
-    if(sec&&sec!==lastSec){
-      lastSec=sec;
-      const dr=document.createElement('tr');
-      dr.innerHTML='<td colspan="6" class="section-divider">'+sec+'</td>';
-      body.appendChild(dr);
-    }
-    const tr=document.createElement('tr');
-    if(t.pos<=3)tr.className='top3';
-    tr.dataset.tee=t.tee;
-    tr.dataset.score=total;
-    const d2txt='<span class="'+scoreClass(t.d2)+'">'+fmtScore(t.d2)+'</span><br><small style="font-size:10px">'+moveTxt(t.move)+'</small>';
-    tr.innerHTML=`
-      <td style="text-align:center">${medalEl(t.pos)}</td>
-      <td>
-        <div class="team-col">
-          <div class="av" style="background:${t.avc};color:${t.avt}">${t.av}</div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
           <div>
-            <div class="team-names">${t.p1} / ${t.p2}</div>
-            <div class="team-sub">HCP ${t.hcp} · ${teeEl(t.tee)}</div>
+            <div style="font-size:14px;font-weight:600">Thompson / Burke</div>
+            <div style="font-size:11px;color:var(--text2)">2-Man Scramble · HCP 8 · Gold · 6,487 yds</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:22px;font-weight:700;color:var(--green)" id="card-total">-9</div>
+            <div style="font-size:10px;color:var(--text2)">63 strokes</div>
           </div>
         </div>
-      </td>
-      <td class="r"><span class="${scoreClass(t.d1)}" style="font-size:13px;font-weight:500">${fmtScore(t.d1)}</span></td>
-      <td class="r" style="line-height:1.4">${d2txt}</td>
-      <td class="r" style="font-size:14px;font-weight:500" class="${scoreClass(total)}"><span class="${scoreClass(total)}">${fmtScore(total)}</span></td>
-      <td class="r"><span class="thru-cell">${t.thru}</span></td>
-    `;
-    body.appendChild(tr);
+        <div style="display:flex;gap:6px;padding:5px 0 8px;border-bottom:0.5px solid var(--border);margin-bottom:8px;flex-wrap:wrap">
+          <span style="font-size:10px;background:#c5e8d3;color:#085041;padding:2px 6px;border-radius:10px">2 Eagles</span>
+          <span style="font-size:10px;background:#e8f5ed;color:#0f6e56;padding:2px 6px;border-radius:10px">9 Birdies</span>
+          <span style="font-size:10px;background:var(--surface2);color:var(--text2);padding:2px 6px;border-radius:10px">6 Pars</span>
+          <span style="font-size:10px;background:#fcebeb;color:#791f1f;padding:2px 6px;border-radius:10px">1 Bogey</span>
+        </div>
+
+        <p class="sec" style="margin-bottom:5px">Front 9</p>
+        <div class="sc-wrap">
+          <table class="sc-tbl">
+            <thead><tr>
+              <th style="text-align:left;padding-left:5px">Hole</th>
+              <th>1<br><small style="font-weight:400;opacity:.75">Lead Off</small></th>
+              <th>2<br><small style="font-weight:400;opacity:.75">Line Drive</small></th>
+              <th>3<br><small style="font-weight:400;opacity:.75">Ballpark</small></th>
+              <th>4<br><small style="font-weight:400;opacity:.75">Upper Deck</small></th>
+              <th>5<br><small style="font-weight:400;opacity:.75">Dbl Play</small></th>
+              <th>6<br><small style="font-weight:400;opacity:.75">Pop Up</small></th>
+              <th>7<br><small style="font-weight:400;opacity:.75">Gap Hitter</small></th>
+              <th>8<br><small style="font-weight:400;opacity:.75">Long Ball</small></th>
+              <th>9<br><small style="font-weight:400;opacity:.75">Arnd Horn</small></th>
+              <th>OUT</th>
+            </tr></thead>
+            <tbody>
+              <tr class="row-par"><td class="col-label">Par</td><td>5</td><td>4</td><td>3</td><td>4</td><td>4</td><td>3</td><td>4</td><td>4</td><td>5</td><td>36</td></tr>
+              <tr class="row-hdcp"><td class="col-label" style="color:#f5d8db">HDCP</td><td>5</td><td>11</td><td>17</td><td>7</td><td>1</td><td>13</td><td>15</td><td>9</td><td>3</td><td>—</td></tr>
+              <tr class="row-black" id="r-black-f"><td class="col-label" style="background:#2c2c2c!important;color:#e0e0e0!important">Black</td><td>589</td><td>448</td><td>187</td><td>372</td><td>440</td><td>132</td><td>346</td><td>461</td><td>605</td><td>3580</td></tr>
+              <tr class="row-gold" id="r-gold-f"><td class="col-label" style="background:#6b4e00!important;color:#f0d080!important">Gold</td><td>566</td><td>400</td><td>154</td><td>349</td><td>411</td><td>123</td><td>322</td><td>405</td><td>574</td><td>3304</td></tr>
+              <tr class="row-silver" id="r-silver-f" style="display:none"><td class="col-label" style="background:#4a4a4a!important;color:#d4d4d4!important">Silver</td><td>532</td><td>357</td><td>133</td><td>331</td><td>366</td><td>112</td><td>300</td><td>383</td><td>538</td><td>3052</td></tr>
+              <tr class="row-score"><td class="col-label">Score</td><td class="h-bir">4</td><td class="h-bir">3</td><td class="h-bir">2</td><td class="h-par">4</td><td class="h-bir">3</td><td class="h-par">3</td><td class="h-bir">3</td><td class="h-alb">2</td><td class="h-bir">4</td><td style="background:var(--surface2);font-weight:600">28</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="sec" style="margin-bottom:5px;margin-top:9px">Back 9</p>
+        <div class="sc-wrap">
+          <table class="sc-tbl">
+            <thead><tr>
+              <th style="text-align:left;padding-left:5px">Hole</th>
+              <th>10<br><small style="font-weight:400;opacity:.75">Pnt Corner</small></th>
+              <th>11<br><small style="font-weight:400;opacity:.75">Triple Play</small></th>
+              <th>12<br><small style="font-weight:400;opacity:.75">Pwr Alley</small></th>
+              <th>13<br><small style="font-weight:400;opacity:.75">Sinker</small></th>
+              <th>14<br><small style="font-weight:400;opacity:.75">Sqz Play</small></th>
+              <th>15<br><small style="font-weight:400;opacity:.75">TX Leaguer</small></th>
+              <th>16<br><small style="font-weight:400;opacity:.75">Scr Pos.</small></th>
+              <th>17<br><small style="font-weight:400;opacity:.75">Dn Stretch</small></th>
+              <th>18<br><small style="font-weight:400;opacity:.75">Walk Off</small></th>
+              <th>IN</th>
+            </tr></thead>
+            <tbody>
+              <tr class="row-par"><td class="col-label">Par</td><td>4</td><td>3</td><td>4</td><td>5</td><td>4</td><td>3</td><td>4</td><td>4</td><td>5</td><td>36</td></tr>
+              <tr class="row-hdcp"><td class="col-label" style="color:#f5d8db">HDCP</td><td>10</td><td>14</td><td>2</td><td>8</td><td>12</td><td>18</td><td>16</td><td>6</td><td>4</td><td>—</td></tr>
+              <tr class="row-black" id="r-black-b"><td class="col-label" style="background:#2c2c2c!important;color:#e0e0e0!important">Black</td><td>381</td><td>173</td><td>480</td><td>512</td><td>428</td><td>192</td><td>327</td><td>405</td><td>532</td><td>3430</td></tr>
+              <tr class="row-gold" id="r-gold-b"><td class="col-label" style="background:#6b4e00!important;color:#f0d080!important">Gold</td><td>359</td><td>147</td><td>431</td><td>496</td><td>393</td><td>172</td><td>306</td><td>378</td><td>501</td><td>3183</td></tr>
+              <tr class="row-silver" id="r-silver-b" style="display:none"><td class="col-label" style="background:#4a4a4a!important;color:#d4d4d4!important">Silver</td><td>343</td><td>128</td><td>396</td><td>475</td><td>362</td><td>151</td><td>292</td><td>360</td><td>447</td><td>2954</td></tr>
+              <tr class="row-score"><td class="col-label">Score</td><td class="h-bir">3</td><td class="h-bir">2</td><td class="h-par">4</td><td class="h-bir">4</td><td class="h-alb">2</td><td class="h-par">3</td><td class="h-bir">3</td><td class="h-par">4</td><td class="h-bir">4</td><td style="background:var(--surface2);font-weight:600">29</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="sec">Live score entry</p>
+      <div class="card" style="padding:8px 14px">
+        <div class="erow"><div style="width:110px;font-size:11px;color:var(--text2)">H1 Lead Off</div><div style="width:36px;font-size:11px;color:var(--text2)">Par 5</div><div style="width:28px;font-size:10px;color:var(--text3)">SI 5</div><div class="stpr"><button class="stpb" onclick="adj('e1',-1)">−</button><div class="stpv" id="e1">4</div><button class="stpb" onclick="adj('e1',1)">+</button></div><div class="slbl" id="el1">Birdie</div></div>
+        <div class="erow"><div style="width:110px;font-size:11px;color:var(--text2)">H2 Line Drive</div><div style="width:36px;font-size:11px;color:var(--text2)">Par 4</div><div style="width:28px;font-size:10px;color:var(--text3)">SI 11</div><div class="stpr"><button class="stpb" onclick="adj('e2',-1)">−</button><div class="stpv" id="e2">3</div><button class="stpb" onclick="adj('e2',1)">+</button></div><div class="slbl" id="el2">Birdie</div></div>
+        <div class="erow"><div style="width:110px;font-size:11px;color:var(--text2)">H3 Ballpark</div><div style="width:36px;font-size:11px;color:var(--text2)">Par 3</div><div style="width:28px;font-size:10px;color:var(--text3)">SI 17</div><div class="stpr"><button class="stpb" onclick="adj('e3',-1)">−</button><div class="stpv" id="e3">2</div><button class="stpb" onclick="adj('e3',1)">+</button></div><div class="slbl" id="el3">Birdie</div></div>
+        <div class="erow"><div style="width:110px;font-size:11px;color:var(--text2)">H4 Upper Deck</div><div style="width:36px;font-size:11px;color:var(--text2)">Par 4</div><div style="width:28px;font-size:10px;color:var(--text3)">SI 7</div><div class="stpr"><button class="stpb" onclick="adj('e4',-1)">−</button><div class="stpv" id="e4">4</div><button class="stpb" onclick="adj('e4',1)">+</button></div><div class="slbl" id="el4">Par</div></div>
+        <div class="erow"><div style="width:110px;font-size:11px;color:var(--text2)">H5 Double Play</div><div style="width:36px;font-size:11px;color:var(--text2)">Par 4</div><div style="width:28px;font-size:10px;color:var(--text3)">SI 1</div><div class="stpr"><button class="stpb" onclick="adj('e5',-1)">−</button><div class="stpv" id="e5">3</div><button class="stpb" onclick="adj('e5',1)">+</button></div><div class="slbl" id="el5">Birdie</div></div>
+        <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:0.5px solid var(--border)">
+          <span style="font-size:12px;color:var(--text2)">Thru 5: <strong id="running">-4</strong></span>
+          <div style="display:flex;gap:8px">
+            <button class="btn bsm" onclick="pg('card-full', this)">All 18 ↓</button>
+            <button class="btn btnp bsm" onclick="saveScores()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SIDE BETS ── -->
+    <div id="p-side" class="page">
+      <p class="sec">Active side bets — Oct 14–15</p>
+      <div class="sdcard">
+        <div class="sdh"><div><div class="sdt">Closest to the pin</div><div style="font-size:11px;color:var(--text2);margin-top:2px">H3 Ballpark · H6 Pop Up · H11 Triple Play · H15 Texas Leaguer</div></div><div class="sdp">$600</div></div>
+        <div class="sdr"><div style="width:26px;height:26px;border-radius:6px;background:#e8f5ed;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#0f6e56" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="#0f6e56"/></svg></div><div style="flex:1"><div style="font-size:12px;font-weight:600">H3 — Miller / Chen</div><div style="font-size:11px;color:var(--text2)">4 ft 2 in</div></div><span class="badge b-ok">Leader</span></div>
+        <div class="sdr"><div style="width:26px;height:26px;border-radius:6px;background:#e8f5ed;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#0f6e56" stroke-width="1.5"/><circle cx="8" cy="8" r="2" fill="#0f6e56"/></svg></div><div style="flex:1"><div style="font-size:12px;font-weight:600">H6 — Thompson / Burke</div><div style="font-size:11px;color:var(--text2)">2 ft 9 in</div></div><span class="badge b-ok">Leader</span></div>
+        <div class="sdr"><div style="width:26px;height:26px;border-radius:6px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#b4b2a9" stroke-width="1.5" stroke-dasharray="2 2"/></svg></div><div style="flex:1;font-size:12px;color:var(--text2)">H11 — In progress</div><span class="badge b-live">Live</span></div>
+        <div class="sdr"><div style="width:26px;height:26px;border-radius:6px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#b4b2a9" stroke-width="1.5" stroke-dasharray="2 2"/></svg></div><div style="flex:1;font-size:12px;color:var(--text2)">H15 — Day 2 pending</div><span class="badge b-pend">Pending</span></div>
+      </div>
+      <div class="sdcard">
+        <div class="sdh"><div><div class="sdt">Long drive</div><div style="font-size:11px;color:var(--text2);margin-top:2px">H9 Around the Horn · Par 5 · 574 yds Gold · Men &amp; Women</div></div><div class="sdp">$400</div></div>
+        <div class="sdr"><div style="width:26px;height:26px;border-radius:6px;background:var(--co-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8h10M9 5l3 3-3 3" stroke="#1a2744" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Men — Kim / Walsh</div><div style="font-size:11px;color:var(--text2)">312 yards</div></div><span class="badge b-ok">Leader</span></div>
+        <div class="sdr"><div style="width:26px;height:26px;border-radius:6px;background:var(--co-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8h10M9 5l3 3-3 3" stroke="#1a2744" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Women — Patel / Ramirez</div><div style="font-size:11px;color:var(--text2)">268 yards</div></div><span class="badge b-ok">Leader</span></div>
+      </div>
+      <div class="sdcard">
+        <div class="sdh"><div><div class="sdt">Longest putt</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Any hole — must be holed out</div></div><div class="sdp">$400</div></div>
+        <div class="sdr"><div style="width:26px;height:26px;border-radius:6px;background:var(--br-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="13" r="2" fill="#8b1a2b"/><line x1="8" y1="2" x2="8" y2="11" stroke="#8b1a2b" stroke-width="1.5" stroke-linecap="round"/></svg></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Nguyen / Garcia — H13 Sinker</div><div style="font-size:11px;color:var(--text2)">38 ft · Day 1</div></div><span class="badge b-ok">Leader</span></div>
+        <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border)"><button class="btn bsm" onclick="recordPutt()">+ Record putt</button></div>
+      </div>
+      <div class="sdcard">
+        <div class="sdh"><div><div class="sdt">Skins</div><div style="font-size:11px;color:var(--text2);margin-top:2px">All 18 holes · $25/team · carryover on ties</div></div><div class="sdp">$1,200</div></div>
+        <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin-bottom:6px" id="skins-grid"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:7px;border-top:0.5px solid var(--border)">
+          <div style="font-size:11px;color:var(--text2)">TB leads — 3 skins ($75)</div>
+          <button class="btn bsm" onclick="pg('skins-full',this)">Full tracker ↓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHAT ── -->
+    <div id="p-chat" class="page">
+      <div class="chat-wrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:0.5px solid var(--border);margin-bottom:10px">
+          <div>
+            <div style="font-size:14px;font-weight:600">Player chat</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:1px">All players &amp; staff · Softask Golf Classic</div>
+          </div>
+          <span class="online-pill" id="online-count">38 online</span>
+        </div>
+        <div class="chat-msgs" id="chat-msgs">
+          <div class="msg them">
+            <div class="msg-meta"><div class="av" style="width:20px;height:20px;background:var(--co);color:var(--co-text);font-size:9px">TD</div>Tournament Director</div>
+            <div class="msg-bubble announce">Welcome to the Softask Golf Classic! Tee times begin at 8 AM on Oct 14. Calcutta auction tonight at 7 PM in the clubhouse. Good luck to all 24 teams!</div>
+          </div>
+          <div class="msg them">
+            <div class="msg-meta"><div class="av" style="width:20px;height:20px;background:#f5d8db;color:var(--br-dk);font-size:9px">TB</div>Thompson / Burke</div>
+            <div class="msg-bubble">What tees are we playing? Gold or Silver?</div>
+          </div>
+          <div class="msg them">
+            <div class="msg-meta"><div class="av" style="width:20px;height:20px;background:var(--co);color:var(--co-text);font-size:9px">TD</div>Tournament Director</div>
+            <div class="msg-bubble announce">Gold tees for HCP 0–14 · Silver tees for HCP 15+. Scorecards are in your cart. Side bet markers are set on H3, H6, H11 and H15. Long drive is H9.</div>
+          </div>
+          <div class="msg them">
+            <div class="msg-meta"><div class="av" style="width:20px;height:20px;background:#e8ecf5;color:var(--co);font-size:9px">MC</div>Miller / Chen</div>
+            <div class="msg-bubble">Just tapped in for birdie on H3 Ballpark — 4'2" for closest to pin!</div>
+          </div>
+          <div class="msg me">
+            <div class="msg-meta" style="justify-content:flex-end">You (Kim / Walsh)</div>
+            <div class="msg-bubble">H9 long drive is going to be epic. 574 yards from Gold 💪</div>
+          </div>
+        </div>
+        <div class="chat-input-wrap">
+          <textarea class="chat-input" id="chat-in" placeholder="Message all players…" rows="1" onkeydown="chatKey(event)"></textarea>
+          <button class="btn btnp bsm" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCOREKEEPERS ── -->
+    <div id="p-scores" class="page">
+      <div class="notice n-warn">Scorekeeper mode · Scores sync live to leaderboard, skins &amp; side bets</div>
+      <p class="sec">Active scorekeepers</p>
+      <div class="card" style="padding:4px 14px">
+        <div class="skr"><div class="skd on"></div><div class="av" style="background:#f5d8db;color:var(--br-dk);width:28px;height:28px;font-size:10px">JD</div><div class="tinfo"><div class="tname">Jamie D.</div><div class="tsub">Teams 1–6 · Synced 1 min ago</div></div><span class="badge b-ok">Online</span></div>
+        <div class="skr"><div class="skd on"></div><div class="av" style="background:var(--co-pale);color:var(--co);width:28px;height:28px;font-size:10px">SR</div><div class="tinfo"><div class="tname">Sam R.</div><div class="tsub">Teams 7–12 · Synced 3 min ago</div></div><span class="badge b-ok">Online</span></div>
+        <div class="skr"><div class="skd aw"></div><div class="av" style="background:#faeeda;color:#633806;width:28px;height:28px;font-size:10px">TK</div><div class="tinfo"><div class="tname">Taylor K.</div><div class="tsub">Teams 13–18 · Synced 14 min ago</div></div><span class="badge b-pend">Delayed</span></div>
+        <div class="skr"><div class="skd on"></div><div class="av" style="background:#eeedfe;color:#3c3489;width:28px;height:28px;font-size:10px">AL</div><div class="tinfo"><div class="tname">Alex L.</div><div class="tsub">Teams 19–24 · Synced 2 min ago</div></div><span class="badge b-ok">Online</span></div>
+      </div>
+      <p class="sec">Score conflict</p>
+      <div class="card" style="padding:10px 14px">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#ba7517;flex-shrink:0;margin-top:4px"></div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600">Davis / Harris — H7 Gap Hitter</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Scorekeeper entered 5 · Player card shows 4</div>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button class="btn bsm" onclick="resolveConflict(5)">Keep 5</button>
+              <button class="btn bsm" onclick="resolveConflict(4)">Use 4</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn" style="width:100%;justify-content:center;margin-top:4px" onclick="addScorekeeper()">+ Add scorekeeper</button>
+    </div>
+
+  </div><!-- /body -->
+</div><!-- /app -->
+
+<script>
+/* ══════════════════════════════════════════
+   SUPABASE SETUP
+   ══════════════════════════════════════════
+   Replace these two values with your own from:
+   https://supabase.com → Project Settings → API
+   ══════════════════════════════════════════ */
+const SUPABASE_URL  = 'https://cyjlgfcgieykwqwvwfvq.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_8bQRBNuqFfxreUOxi__jKw_w7HRYIEe';
+
+let db = null;
+let realtimeChannel = null;
+let currentDay = 1;
+let deferPrompt = null;
+
+/* ── Init ── */
+function initSupabase() {
+  try {
+    db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    loadLeaderboard();
+    loadCalcutta();
+    subscribeRealtime();
+    subscribeChat();
+  } catch(e) {
+    console.warn('Supabase not configured — using demo data');
+    loadDemoData();
+  }
+}
+
+/* ══ LEADERBOARD ══ */
+const demoTeams = [
+  {pos:1,av:'TB',avc:'#f5d8db',avt:'#6b1220',p1:'Thompson',p2:'Burke',hcp:8,tee:'Gold',d1:-9,d2:-7,thru:'F'},
+  {pos:2,av:'MC',avc:'#e8ecf5',avt:'#1a2744',p1:'Miller',p2:'Chen',hcp:12,tee:'Gold',d1:-7,d2:-6,thru:'F'},
+  {pos:3,av:'PR',avc:'#faeeda',avt:'#633806',p1:'Patel',p2:'Ramirez',hcp:15,tee:'Silver',d1:-6,d2:-5,thru:'F'},
+  {pos:4,av:'KW',avc:'#f4c0d1',avt:'#72243e',p1:'Kim',p2:'Walsh',hcp:10,tee:'Gold',d1:-5,d2:-5,thru:'F'},
+  {pos:5,av:'NG',avc:'#eeedfe',avt:'#3c3489',p1:'Nguyen',p2:'Garcia',hcp:18,tee:'Silver',d1:-3,d2:-4,thru:'16'},
+  {pos:6,av:'SL',avc:'#e8f5ed',avt:'#085041',p1:'Stewart',p2:'Lee',hcp:22,tee:'Silver',d1:0,d2:-3,thru:'F'},
+  {pos:7,av:'JR',avc:'#e6f1fb',avt:'#0c447c',p1:'Jenkins',p2:'Ross',hcp:6,tee:'Gold',d1:-4,d2:-2,thru:'F'},
+  {pos:8,av:'DH',avc:'#fcebeb',avt:'#791f1f',p1:'Davis',p2:'Harris',hcp:20,tee:'Silver',d1:-2,d2:-2,thru:'F'},
+  {pos:9,av:'WF',avc:'#faeeda',avt:'#412402',p1:'Walker',p2:'Foster',hcp:14,tee:'Gold',d1:-3,d2:-1,thru:'F'},
+  {pos:10,av:'CM',avc:'#e1f5ee',avt:'#085041',p1:'Cooper',p2:'Mills',hcp:16,tee:'Silver',d1:-1,d2:-2,thru:'11'},
+  {pos:11,av:'BT',avc:'#f5d8db',avt:'#6b1220',p1:'Brooks',p2:'Taylor',hcp:9,tee:'Gold',d1:-2,d2:-1,thru:'F'},
+  {pos:12,av:'EV',avc:'#e8ecf5',avt:'#1a2744',p1:'Evans',p2:'Vance',hcp:11,tee:'Gold',d1:-1,d2:-2,thru:'F'},
+  {pos:13,av:'OD',avc:'#fbeaf0',avt:'#993556',p1:'Owens',p2:'Dixon',hcp:19,tee:'Silver',d1:-1,d2:-1,thru:'F'},
+  {pos:14,av:'LH',avc:'#eaf3de',avt:'#27500a',p1:'Long',p2:'Hayes',hcp:13,tee:'Gold',d1:0,d2:-1,thru:'F'},
+  {pos:15,av:'PM',avc:'#faeeda',avt:'#633806',p1:'Perry',p2:'Morgan',hcp:17,tee:'Silver',d1:-2,d2:0,thru:'F'},
+  {pos:16,av:'GN',avc:'#e1f5ee',avt:'#04342c',p1:'Grant',p2:'Nash',hcp:21,tee:'Silver',d1:0,d2:0,thru:'16'},
+  {pos:17,av:'SC',avc:'#e6f1fb',avt:'#042c53',p1:'Stone',p2:'Cole',hcp:7,tee:'Gold',d1:-1,d2:1,thru:'F'},
+  {pos:18,av:'AW',avc:'#f5d8db',avt:'#6b1220',p1:'Adams',p2:'Warren',hcp:24,tee:'Silver',d1:1,d2:0,thru:'F'},
+  {pos:19,av:'HB',avc:'#e8ecf5',avt:'#1a2744',p1:'Hughes',p2:'Bell',hcp:16,tee:'Silver',d1:0,d2:1,thru:'F'},
+  {pos:20,av:'FP',avc:'#fcebeb',avt:'#791f1f',p1:'Fleming',p2:'Price',hcp:5,tee:'Gold',d1:1,d2:1,thru:'F'},
+  {pos:21,av:'RK',avc:'#eeedfe',avt:'#3c3489',p1:'Reed',p2:'Knight',hcp:23,tee:'Silver',d1:2,d2:0,thru:'F'},
+  {pos:22,av:'YC',avc:'#faeeda',avt:'#412402',p1:'Young',p2:'Cruz',hcp:18,tee:'Silver',d1:1,d2:2,thru:'F'},
+  {pos:23,av:'WS',avc:'#e8f5ed',avt:'#085041',p1:'Wood',p2:'Simmons',hcp:25,tee:'Silver',d1:2,d2:2,thru:'F'},
+  {pos:24,av:'BD',avc:'#f4c0d1',avt:'#72243e',p1:'Burns',p2:'Dean',hcp:28,tee:'Silver',d1:3,d2:2,thru:'F'},
+];
+
+function fmt(n){if(n==null)return'—';if(n===0)return'E';return n>0?'+'+n:''+n;}
+function cls(n){if(n===0)return'ev';return n<0?'neg':'pos-score';}
+function getLabel(s,par){const d=s-par;if(d<=-3)return'Albatross';if(d===-2)return'Eagle';if(d===-1)return'Birdie';if(d===0)return'Par';if(d===1)return'Bogey';if(d===2)return'Double';return'Triple+';}
+
+function buildLeaderRows(teams, limit) {
+  const show = limit ? teams.slice(0, limit) : teams;
+  return show.map((t,i) => {
+    const top = t.pos <= 3;
+    return `<div class="lrow" style="${top?'background:var(--br-pale);margin:0 -14px;padding:9px 14px;':''}">
+      <div class="pos ${t.pos===1?'g':t.pos===2?'s':t.pos===3?'b':''}">${t.pos}</div>
+      <div class="av" style="background:${t.avc};color:${t.avt}">${t.av}</div>
+      <div class="tinfo">
+        <div class="tname">${t.p1} / ${t.p2}</div>
+        <div class="tsub">HCP ${t.hcp} · ${t.tee}</div>
+      </div>
+      <div class="scr">
+        <div class="scr-big ${cls(t.d1)}">${fmt(t.d1)}</div>
+        <div class="thru">${t.thru}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadDemoData() {
+  document.getElementById('leaderboard-rows').innerHTML = buildLeaderRows(demoTeams, 7);
+  document.getElementById('sync-status').textContent = 'Demo mode';
+  buildCalcuttaDemo();
+  buildSkinsGrid();
+}
+
+async function loadLeaderboard() {
+  if (!db) return;
+  try {
+    const { data, error } = await db.from('teams').select('*').order('total_score');
+    if (error) throw error;
+    const rows = document.getElementById('leaderboard-rows');
+    rows.innerHTML = buildLeaderRows(data || demoTeams, 7);
+    document.getElementById('sync-status').textContent = 'Updated just now';
+  } catch(e) {
+    loadDemoData();
+  }
+}
+
+/* ══ REALTIME ══ */
+function subscribeRealtime() {
+  if (!db) return;
+  realtimeChannel = db.channel('scores')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'teams' }, () => {
+      loadLeaderboard();
+      document.getElementById('sync-status').textContent = 'Updated just now';
+    })
+    .subscribe();
+}
+
+/* ══ CALCUTTA ══ */
+const demoCalcutta = [
+  {av:'TB',avc:'#f5d8db',avt:'#6b1220',name:'Thompson / Burke',bid:1300,pct:100},
+  {av:'MC',avc:'#e8ecf5',avt:'#1a2744',name:'Miller / Chen',bid:1050,pct:80},
+  {av:'PR',avc:'#faeeda',avt:'#633806',name:'Patel / Ramirez',bid:850,pct:65},
+  {av:'KW',avc:'#f4c0d1',avt:'#72243e',name:'Kim / Walsh',bid:725,pct:55},
+  {av:'NG',avc:'#eeedfe',avt:'#3c3489',name:'Nguyen / Garcia',bid:575,pct:44},
+];
+
+function buildCalcuttaDemo() {
+  document.getElementById('calcutta-rows').innerHTML = demoCalcutta.map(c => `
+    <div class="lrow">
+      <div class="av" style="background:${c.avc};color:${c.avt}">${c.av}</div>
+      <div class="tinfo">
+        <div class="tname">${c.name}</div>
+        <div style="margin-top:5px;display:flex;align-items:center;gap:6px">
+          <div class="potbar"><div class="potfill" style="width:${c.pct}%"></div></div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="bid">$${c.bid.toLocaleString()}</div>
+        <span class="badge b-sold" style="display:block;margin-top:2px">Sold</span>
+      </div>
+    </div>`).join('');
+}
+
+async function loadCalcutta() {
+  if (!db) return;
+  try {
+    const { data, error } = await db.from('calcutta').select('*').order('bid', { ascending: false });
+    if (error) throw error;
+    if (!data || !data.length) { buildCalcuttaDemo(); return; }
+    const max = data[0].bid;
+    document.getElementById('calcutta-rows').innerHTML = data.map(c => `
+      <div class="lrow">
+        <div class="av" style="background:#f5d8db;color:#6b1220">${c.initials||'??'}</div>
+        <div class="tinfo">
+          <div class="tname">${c.team_name}</div>
+          <div style="margin-top:5px;display:flex;align-items:center;gap:6px">
+            <div class="potbar"><div class="potfill" style="width:${Math.round(c.bid/max*100)}%"></div></div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="bid">$${c.bid.toLocaleString()}</div>
+          <span class="badge b-sold" style="display:block;margin-top:2px">Sold</span>
+        </div>
+      </div>`).join('');
+    const total = data.reduce((s,c)=>s+c.bid,0);
+    document.getElementById('calc-pot').textContent = '$'+total.toLocaleString();
+    document.getElementById('calc-top').textContent = '$'+data[0].bid.toLocaleString();
+    document.getElementById('calc-top-team').textContent = data[0].team_name;
+  } catch(e) { buildCalcuttaDemo(); }
+}
+
+/* ══ CHAT ══ */
+function subscribeChat() {
+  if (!db) return;
+  db.channel('chat').on('broadcast', { event: 'message' }, ({ payload }) => {
+    appendChatMsg(payload.sender, payload.text, false);
+  }).subscribe();
+}
+
+function appendChatMsg(sender, text, isMe) {
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + (isMe ? 'me' : 'them');
+  d.innerHTML = isMe
+    ? `<div class="msg-meta" style="justify-content:flex-end">You (${sender})</div><div class="msg-bubble">${text.replace(/</g,'&lt;')}</div>`
+    : `<div class="msg-meta"><div class="av" style="width:20px;height:20px;background:var(--surface2);color:var(--text2);font-size:9px">${sender.slice(0,2).toUpperCase()}</div>${sender}</div><div class="msg-bubble">${text.replace(/</g,'&lt;')}</div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendChat() {
+  const inp = document.getElementById('chat-in');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const sender = 'Kim / Walsh';
+  appendChatMsg(sender, txt, true);
+  inp.value = '';
+  if (db) {
+    await db.channel('chat').send({ type: 'broadcast', event: 'message', payload: { sender, text: txt } });
+  }
+}
+function chatKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
+
+/* ══ SCORE ENTRY ══ */
+const pars={e1:5,e2:4,e3:3,e4:4,e5:4};
+const scs={e1:4,e2:3,e3:2,e4:4,e5:3};
+function calcRun(){let t=0;Object.keys(scs).forEach(k=>t+=(scs[k]-pars[k]));document.getElementById('running').textContent=(t===0?'E':t>0?'+'+t:''+t);}
+function adj(id,d){scs[id]=Math.max(1,(scs[id]||pars[id])+d);document.getElementById(id).textContent=scs[id];document.getElementById('el'+id.slice(1)).textContent=getLabel(scs[id],pars[id]);calcRun();}
+
+async function saveScores() {
+  if (!db) { alert('Scores saved (demo mode)'); return; }
+  const scores = Object.entries(scs).map(([k,v])=>({ hole: parseInt(k.slice(1)), score: v }));
+  const { error } = await db.from('scores').upsert({ team: 'Thompson / Burke', day: currentDay, holes: scores, updated_at: new Date() });
+  if (error) alert('Error saving: ' + error.message);
+  else alert('Scores saved successfully!');
+}
+
+/* ══ SKINS GRID ══ */
+const skinsData = [
+  {h:1,w:'TB',bc:'#f5d8db',tc:'#6b1220'},
+  {h:2,w:'MC',bc:'#e8ecf5',tc:'#1a2744'},
+  {h:3,w:'TB',bc:'#f5d8db',tc:'#6b1220'},
+  {h:4,w:null},{h:5,w:'PR',bc:'#faeeda',tc:'#633806'},
+  {h:6,w:null},
+  {h:7,w:'MC',bc:'#e8ecf5',tc:'#1a2744'},
+  {h:8,w:'TB',bc:'#f5d8db',tc:'#6b1220'},
+  {h:9,w:null},
+];
+function buildSkinsGrid() {
+  const g = document.getElementById('skins-grid');
+  if (!g) return;
+  g.innerHTML = '<div style="font-size:9px;color:var(--text2);text-align:center;padding:3px 0">H</div>'
+    + [1,2,3,4,5,6,7,8,9].map(h=>`<div style="font-size:9px;color:var(--text2);text-align:center;padding:3px 0">${h}</div>`).join('')
+    + '<div style="font-size:9px;font-weight:600;color:var(--text2);text-align:center;padding:3px 0">Win</div>'
+    + skinsData.map(s => s.w
+      ? `<div style="background:${s.bc};color:${s.tc};border-radius:3px;font-size:9px;font-weight:600;text-align:center;padding:4px 1px">${s.w}</div>`
+      : `<div style="background:var(--surface2);color:var(--text2);border-radius:3px;font-size:9px;text-align:center;padding:4px 1px">—</div>`
+    ).join('');
+}
+
+/* ══ TEE SELECTOR ══ */
+function setTee(t, el) {
+  document.querySelectorAll('.tee-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  ['black','gold','silver'].forEach(tee => {
+    ['f','b'].forEach(side => {
+      const r = document.getElementById('r-'+tee+'-'+side);
+      if (r) r.style.display = (tee===t ? '' : 'none');
+    });
   });
 }
 
-function filterTbl(f,el){
-  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+/* ══ NAV ══ */
+function pg(name, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const page = document.getElementById('p-'+name);
+  if (page) page.classList.add('active');
+  if (el && el.classList.contains('tab')) el.classList.add('active');
+}
+function setDay(d, el) {
+  currentDay = d;
+  document.querySelectorAll('.dpill').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
-  let filtered=teams;
-  if(f==='under')filtered=teams.filter(t=>(t.d1+(t.d2||0))<0);
-  else if(f==='over')filtered=teams.filter(t=>(t.d1+(t.d2||0))>0);
-  else if(f==='gold')filtered=teams.filter(t=>t.tee==='gold');
-  else if(f==='silver')filtered=teams.filter(t=>t.tee==='silver');
-  renderRows(filtered);
+  document.getElementById('day-label').textContent = 'Day ' + d;
+  loadLeaderboard();
 }
 
-renderRows(teams);
+/* ══ PWA INSTALL ══ */
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferPrompt = e;
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.style.display = 'flex';
+});
+function installApp() {
+  if (deferPrompt) {
+    deferPrompt.prompt();
+    deferPrompt.userChoice.then(() => {
+      deferPrompt = null;
+      const banner = document.getElementById('install-banner');
+      if (banner) banner.style.display = 'none';
+    });
+  }
+}
+
+/* ══ SERVICE WORKER ══ */
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'softask-golf-v1';
+    const ASSETS = ['/'];
+    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))));
+    self.addEventListener('fetch', e => e.respondWith(
+      caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('/')))
+    ));
+  `;
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  const swURL = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swURL).catch(()=>{});
+}
+
+/* ══ HELPERS ══ */
+function recordPutt() { alert('Putt recording — connect your team name and distance to save via Supabase.'); }
+function resolveConflict(score) { alert('Score ' + score + ' confirmed for Davis / Harris H7.'); }
+function addScorekeeper() { alert('Invite link copied — share with your scorekeeper to grant access.'); }
+
+/* ══ BOOT ══ */
+document.addEventListener('DOMContentLoaded', () => {
+  initSupabase();
+  buildSkinsGrid();
+  document.getElementById('chat-msgs').scrollTop = 99999;
+});
 </script>
+
+<!--
+═══════════════════════════════════════════════════════════════
+  SUPABASE DATABASE SETUP
+  Run these SQL commands in your Supabase SQL editor:
+  https://supabase.com → your project → SQL Editor
+
+  CREATE TABLE teams (
+    id SERIAL PRIMARY KEY,
+    team_name TEXT NOT NULL,
+    initials TEXT,
+    player1 TEXT,
+    player2 TEXT,
+    handicap INT,
+    tee TEXT DEFAULT 'gold',
+    day1_score INT DEFAULT 0,
+    day2_score INT DEFAULT 0,
+    total_score INT GENERATED ALWAYS AS (day1_score + day2_score) STORED,
+    thru TEXT DEFAULT 'F',
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  CREATE TABLE calcutta (
+    id SERIAL PRIMARY KEY,
+    team_name TEXT,
+    initials TEXT,
+    bid INT,
+    buyer_name TEXT,
+    sold_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  CREATE TABLE scores (
+    id SERIAL PRIMARY KEY,
+    team TEXT,
+    day INT,
+    hole INT,
+    score INT,
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  CREATE TABLE chat_messages (
+    id SERIAL PRIMARY KEY,
+    sender TEXT,
+    message TEXT,
+    sent_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  CREATE TABLE side_bets (
+    id SERIAL PRIMARY KEY,
+    bet_type TEXT,
+    hole INT,
+    team_name TEXT,
+    value TEXT,
+    day INT,
+    recorded_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  -- Enable realtime on teams table
+  ALTER PUBLICATION supabase_realtime ADD TABLE teams;
+  ALTER PUBLICATION supabase_realtime ADD TABLE chat_messages;
+
+═══════════════════════════════════════════════════════════════
+-->
 </body>
 </html>
