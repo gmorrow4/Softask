@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Softask Golf Classic — Leaderboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--br:#8b1a2b;--br-dk:#6b1220;--br-lt:#a82234;--br-pale:#f9eced;--br-text:#f5d8db;--br-muted:#c98890;--co:#1a2744;--co-lt:#243660;--co-pale:#e8ecf5;--co-text:#c8d4ee;--gold:#c9a84c}
+body{font-family:system-ui,-apple-system,sans-serif;color:#1a1a1a;background:#f4f4f2;min-height:100vh;padding:16px}
+.wrap{max-width:720px;margin:0 auto}
+.hdr{background:var(--br-dk);border-radius:12px 12px 0 0;overflow:hidden}
+.hdr-logos{display:flex;align-items:stretch;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.logo-s{flex:1;padding:11px 14px;background:var(--br-dk);display:flex;align-items:center;gap:9px;border-right:0.5px solid rgba(255,255,255,0.12)}
+.logo-c{padding:11px 14px;background:var(--co);display:flex;align-items:center;gap:9px}
+.lmk{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-ev{display:flex;align-items:center;justify-content:space-between;padding:9px 14px 10px;background:var(--br)}
+.filters{display:flex;align-items:center;gap:6px;padding:12px 0 8px;flex-wrap:wrap}
+.fbtn{padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:0.5px solid #ccc;background:transparent;color:#555}
+.fbtn.active{background:var(--br);color:#fff;border-color:var(--br)}
+.fbtn-co.active{background:var(--co);color:var(--co-text);border-color:var(--co)}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:#ebebeb;border-radius:8px;padding:10px 12px}
+.stat-l{font-size:11px;color:#666;margin-bottom:3px}
+.stat-v{font-size:19px;font-weight:500}
+.stat-s{font-size:10px;color:#666;margin-top:2px}
+.tbl-wrap{background:#fff;border:0.5px solid #ddd;border-radius:12px;overflow:hidden;margin-bottom:10px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl thead tr{background:var(--co)}
+.tbl thead th{padding:9px 7px;font-weight:500;color:var(--co-text);font-size:11px;text-align:left;border-bottom:0.5px solid rgba(255,255,255,0.12)}
+.tbl thead th.r{text-align:right}
+.tbl tbody tr{border-bottom:0.5px solid #eee}
+.tbl tbody tr:last-child{border-bottom:none}
+.tbl tbody tr:hover{background:#f9f9f9}
+.tbl tbody tr.top3{background:var(--br-pale)}
+.tbl tbody tr.top3:hover{background:#f5d2d5}
+.tbl td{padding:9px 7px;vertical-align:middle}
+.tbl td.r{text-align:right}
+.medal{display:inline-flex;width:22px;height:22px;border-radius:50%;align-items:center;justify-content:center;font-size:11px;font-weight:500}
+.medal-g{background:#faeeda;color:#633806}
+.medal-s{background:#f1efe8;color:#444}
+.medal-b{background:#faece7;color:#712b13}
+.av{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;vertical-align:middle}
+.team-col{display:flex;align-items:center;gap:8px}
+.team-names{font-size:12px;font-weight:500;line-height:1.3}
+.team-sub{font-size:10px;color:#888;margin-top:1px}
+.score-neg{color:#1b5e34}
+.score-pos{color:#9b2020}
+.score-ev{color:#888}
+.thru-cell{font-size:10px;color:#666;background:#ebebeb;padding:2px 6px;border-radius:8px;white-space:nowrap;display:inline-block}
+.tee-g{font-size:10px;background:#faeeda;color:#633806;padding:1px 5px;border-radius:8px;display:inline-block}
+.tee-s{font-size:10px;background:#f1efe8;color:#444;padding:1px 5px;border-radius:8px;display:inline-block}
+.move-up{font-size:10px;color:#1b5e34}
+.move-dn{font-size:10px;color:#9b2020}
+.move-ev{font-size:10px;color:#aaa}
+.section-divider{padding:5px 10px;font-size:10px;font-weight:500;letter-spacing:.04em;color:#888;background:#f4f4f2;border-bottom:0.5px solid #eee;text-transform:uppercase}
+.legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 6px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+.footer{display:flex;justify-content:space-between;align-items:center;padding-top:4px}
+.export-btn{font-size:11px;padding:5px 12px;border-radius:8px;border:0.5px solid #ccc;background:transparent;cursor:pointer;color:#333}
+.export-btn:hover{background:#ebebeb}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div class="hdr-logos">
+      <div class="logo-s">
+        <div class="lmk" style="background:var(--br-lt)">
+          <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#f5d8db" stroke-width="1.4"/><circle cx="10" cy="10" r="3" fill="#f5d8db"/><line x1="10" y1="2" x2="10" y2="5" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/><line x1="10" y1="15" x2="10" y2="18" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/><line x1="2" y1="10" x2="5" y2="10" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/><line x1="15" y1="10" x2="18" y2="10" stroke="#f5d8db" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div><div style="font-size:13px;font-weight:500;color:#f5d8db">Softask Golf Classic</div><div style="font-size:10px;color:#c98890;margin-top:1px">Oct 14–15, 2026</div></div>
+      </div>
+      <div class="logo-c">
+        <div class="lmk" style="background:var(--co-lt)">
+          <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><path d="M3 17 L3 8 L10 3.5 L17 7.5 L17 17" stroke="#c8d4ee" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="M3 17 L17 17" stroke="#c8d4ee" stroke-width="1.3" stroke-linecap="round"/><circle cx="10" cy="11.5" r="2.5" fill="#c8d4ee"/><line x1="10" y1="14" x2="10" y2="17" stroke="#c8d4ee" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div><div style="font-size:12px;font-weight:500;color:#c8d4ee">Texas Rangers Golf Club</div><div style="font-size:10px;color:#7a93c8;margin-top:1px">Arlington, TX · Par 72</div></div>
+      </div>
+    </div>
+    <div class="hdr-ev">
+      <div style="font-size:12px;color:#f5d8db">Full leaderboard — 2-Man Scramble · Day 1 final / Day 2 in progress</div>
+      <span style="font-size:10px;background:var(--br-pale);color:var(--br-dk);padding:2px 7px;border-radius:10px;border:0.5px solid #e8b0b8">Live</span>
+    </div>
+  </div>
+
+  <div style="padding:0 0 12px">
+    <div class="filters">
+      <span style="font-size:11px;color:#666">Filter:</span>
+      <button class="fbtn active" onclick="filterTbl('all',this)">All 24</button>
+      <button class="fbtn" onclick="filterTbl('under',this)">Under par</button>
+      <button class="fbtn" onclick="filterTbl('over',this)">Over par</button>
+      <button class="fbtn fbtn-co" onclick="filterTbl('gold',this)">Gold tee</button>
+      <button class="fbtn fbtn-co" onclick="filterTbl('silver',this)">Silver tee</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="stat-l">Leader</div><div class="stat-v">-9</div><div class="stat-s">Thompson / Burke</div></div>
+      <div class="stat"><div class="stat-l">Avg score</div><div class="stat-v">-2.1</div><div class="stat-s">Field avg · Day 1</div></div>
+      <div class="stat"><div class="stat-l">Under par</div><div class="stat-v">17</div><div class="stat-s">of 24 teams</div></div>
+    </div>
+
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--br-pale);border:0.5px solid #e8b0b8"></div>Top 3</div>
+      <div class="leg-item"><span class="tee-g">G</span> Gold tee</div>
+      <div class="leg-item"><span class="tee-s">S</span> Silver tee</div>
+      <div class="leg-item"><span class="move-up">▲</span> Moved up D2</div>
+      <div class="leg-item"><span class="move-dn">▼</span> Moved down D2</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th style="width:34px;text-align:center">#</th>
+            <th>Team</th>
+            <th class="r" style="width:52px">Day 1</th>
+            <th class="r" style="width:56px">Day 2</th>
+            <th class="r" style="width:48px">Total</th>
+            <th class="r" style="width:40px">Thru</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <span style="font-size:11px;color:#888">Scores update live · Last sync 2 min ago</span>
+      <button class="export-btn" onclick="window.print()">Print / Export</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const teams=[
+  {pos:1,av:'TB',avc:'#f5d8db',avt:'#6b1220',p1:'Thompson',p2:'Burke',hcp:8,tee:'gold',d1:-9,d2:-7,thru:'F',move:0},
+  {pos:2,av:'MC',avc:'#e8ecf5',avt:'#1a2744',p1:'Miller',p2:'Chen',hcp:12,tee:'gold',d1:-7,d2:-6,thru:'F',move:1},
+  {pos:3,av:'PR',avc:'#faeeda',avt:'#633806',p1:'Patel',p2:'Ramirez',hcp:15,tee:'silver',d1:-6,d2:-5,thru:'F',move:0},
+  {pos:4,av:'KW',avc:'#f4c0d1',avt:'#72243e',p1:'Kim',p2:'Walsh',hcp:10,tee:'gold',d1:-5,d2:-5,thru:'F',move:-1},
+  {pos:5,av:'NG',avc:'#eeedfe',avt:'#3c3489',p1:'Nguyen',p2:'Garcia',hcp:18,tee:'silver',d1:-3,d2:-4,thru:'14',move:2},
+  {pos:6,av:'SL',avc:'#e8f5ed',avt:'#085041',p1:'Stewart',p2:'Lee',hcp:22,tee:'silver',d1:0,d2:-3,thru:'F',move:0},
+  {pos:7,av:'JR',avc:'#e6f1fb',avt:'#0c447c',p1:'Jenkins',p2:'Ross',hcp:6,tee:'gold',d1:-4,d2:-2,thru:'F',move:-2},
+  {pos:8,av:'DH',avc:'#fcebeb',avt:'#791f1f',p1:'Davis',p2:'Harris',hcp:20,tee:'silver',d1:-2,d2:-2,thru:'F',move:1},
+  {pos:9,av:'WF',avc:'#faeeda',avt:'#412402',p1:'Walker',p2:'Foster',hcp:14,tee:'gold',d1:-3,d2:-1,thru:'F',move:-1},
+  {pos:10,av:'CM',avc:'#e1f5ee',avt:'#085041',p1:'Cooper',p2:'Mills',hcp:16,tee:'silver',d1:-1,d2:-2,thru:'11',move:2},
+  {pos:11,av:'BT',avc:'#f5d8db',avt:'#6b1220',p1:'Brooks',p2:'Taylor',hcp:9,tee:'gold',d1:-2,d2:-1,thru:'F',move:0},
+  {pos:12,av:'EV',avc:'#e8ecf5',avt:'#1a2744',p1:'Evans',p2:'Vance',hcp:11,tee:'gold',d1:-1,d2:-2,thru:'F',move:1},
+  {pos:13,av:'OD',avc:'#fbeaf0',avt:'#993556',p1:'Owens',p2:'Dixon',hcp:19,tee:'silver',d1:-1,d2:-1,thru:'F',move:-1},
+  {pos:14,av:'LH',avc:'#eaf3de',avt:'#27500a',p1:'Long',p2:'Hayes',hcp:13,tee:'gold',d1:0,d2:-1,thru:'F',move:0},
+  {pos:15,av:'PM',avc:'#faeeda',avt:'#633806',p1:'Perry',p2:'Morgan',hcp:17,tee:'silver',d1:-2,d2:0,thru:'F',move:-1},
+  {pos:16,av:'GN',avc:'#e1f5ee',avt:'#04342c',p1:'Grant',p2:'Nash',hcp:21,tee:'silver',d1:0,d2:0,thru:'16',move:1},
+  {pos:17,av:'SC',avc:'#e6f1fb',avt:'#042c53',p1:'Stone',p2:'Cole',hcp:7,tee:'gold',d1:-1,d2:1,thru:'F',move:-2},
+  {pos:18,av:'AW',avc:'#f5d8db',avt:'#6b1220',p1:'Adams',p2:'Warren',hcp:24,tee:'silver',d1:1,d2:0,thru:'F',move:0},
+  {pos:19,av:'HB',avc:'#e8ecf5',avt:'#1a2744',p1:'Hughes',p2:'Bell',hcp:16,tee:'silver',d1:0,d2:1,thru:'F',move:1},
+  {pos:20,av:'FP',avc:'#fcebeb',avt:'#791f1f',p1:'Fleming',p2:'Price',hcp:5,tee:'gold',d1:1,d2:1,thru:'F',move:-1},
+  {pos:21,av:'RK',avc:'#eeedfe',avt:'#3c3489',p1:'Reed',p2:'Knight',hcp:23,tee:'silver',d1:2,d2:0,thru:'F',move:0},
+  {pos:22,av:'YC',avc:'#faeeda',avt:'#412402',p1:'Young',p2:'Cruz',hcp:18,tee:'silver',d1:1,d2:2,thru:'F',move:-1},
+  {pos:23,av:'WS',avc:'#e8f5ed',avt:'#085041',p1:'Wood',p2:'Simmons',hcp:25,tee:'silver',d1:2,d2:2,thru:'F',move:0},
+  {pos:24,av:'BD',avc:'#f4c0d1',avt:'#72243e',p1:'Burns',p2:'Dean',hcp:28,tee:'silver',d1:3,d2:2,thru:'F',move:1},
+];
+
+function fmtScore(n){if(n===null||n===undefined)return'—';if(n===0)return'E';return n>0?'+'+n:''+n;}
+function scoreClass(n){if(n===0)return'score-ev';return n<0?'score-neg':'score-pos';}
+function moveTxt(m){if(m===0)return'<span class="move-ev">—</span>';if(m>0)return'<span class="move-up">▲'+m+'</span>';return'<span class="move-dn">▼'+Math.abs(m)+'</span>';}
+function medalEl(pos){
+  if(pos===1)return'<span class="medal medal-g">1</span>';
+  if(pos===2)return'<span class="medal medal-s">2</span>';
+  if(pos===3)return'<span class="medal medal-b">3</span>';
+  return'<span style="font-size:13px;font-weight:500;color:#888">'+pos+'</span>';
+}
+function teeEl(t){
+  if(t==='gold')return'<span class="tee-g">G</span>';
+  return'<span class="tee-s">S</span>';
+}
+
+function renderRows(data){
+  const body=document.getElementById('tbl-body');
+  body.innerHTML='';
+  let lastSec='';
+  data.forEach(t=>{
+    const total=t.d1+(t.d2||0);
+    let sec='';
+    if(t.pos===1)sec='Podium contenders';
+    else if(total<0&&lastSec!=='Under par')sec='Under par';
+    else if(total===0&&lastSec!=='Even par')sec='Even par';
+    else if(total>0&&lastSec!=='Over par')sec='Over par';
+    if(sec&&sec!==lastSec){
+      lastSec=sec;
+      const dr=document.createElement('tr');
+      dr.innerHTML='<td colspan="6" class="section-divider">'+sec+'</td>';
+      body.appendChild(dr);
+    }
+    const tr=document.createElement('tr');
+    if(t.pos<=3)tr.className='top3';
+    tr.dataset.tee=t.tee;
+    tr.dataset.score=total;
+    const d2txt='<span class="'+scoreClass(t.d2)+'">'+fmtScore(t.d2)+'</span><br><small style="font-size:10px">'+moveTxt(t.move)+'</small>';
+    tr.innerHTML=`
+      <td style="text-align:center">${medalEl(t.pos)}</td>
+      <td>
+        <div class="team-col">
+          <div class="av" style="background:${t.avc};color:${t.avt}">${t.av}</div>
+          <div>
+            <div class="team-names">${t.p1} / ${t.p2}</div>
+            <div class="team-sub">HCP ${t.hcp} · ${teeEl(t.tee)}</div>
+          </div>
+        </div>
+      </td>
+      <td class="r"><span class="${scoreClass(t.d1)}" style="font-size:13px;font-weight:500">${fmtScore(t.d1)}</span></td>
+      <td class="r" style="line-height:1.4">${d2txt}</td>
+      <td class="r" style="font-size:14px;font-weight:500" class="${scoreClass(total)}"><span class="${scoreClass(total)}">${fmtScore(total)}</span></td>
+      <td class="r"><span class="thru-cell">${t.thru}</span></td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function filterTbl(f,el){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  let filtered=teams;
+  if(f==='under')filtered=teams.filter(t=>(t.d1+(t.d2||0))<0);
+  else if(f==='over')filtered=teams.filter(t=>(t.d1+(t.d2||0))>0);
+  else if(f==='gold')filtered=teams.filter(t=>t.tee==='gold');
+  else if(f==='silver')filtered=teams.filter(t=>t.tee==='silver');
+  renderRows(filtered);
+}
+
+renderRows(teams);
+</script>
+</body>
+</html>
